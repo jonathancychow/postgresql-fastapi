@@ -19,7 +19,8 @@ def get_credentials():
 
 
 user, db, password, host, port = get_credentials()
-con = psycopg2.connect(database="postgres", user="postgres", password=password, host="127.0.0.1", port="5432")
+# con = psycopg2.connect(database="postgres", user="postgres", password=password, host="127.0.0.1", port="5432")
+con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
 
 print("Database opened successfully")
 

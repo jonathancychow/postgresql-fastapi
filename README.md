@@ -49,7 +49,7 @@ poetry install
 Use the `--reload` flag:
 
 ```
-poetry run uvicorn src.mat.sim.rFPro.main:app --reload
+poetry run uvicorn src.server.main:app --reload
 ```
 
 ### Linting
