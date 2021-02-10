@@ -51,13 +51,13 @@ def connect2db():
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
-    cur.execute("INSERT INTO RUNRECORD (ID, TOTALTIME, DISTANCE, INTENSITY) VALUES (3425, 'Jonathan', 18, 'Information Technology', 'ICT')");
+    cur.execute("INSERT INTO RUNRECORD (ID, TOTALTIME, DISTANCE, INTENSITY) VALUES (1, '00:24:32', 10, 8)");
     con.commit()
     con.close()
     return JSONResponse(
         status_code=200,
         content={
-            'info': 'User Added'
+            'info': 'Record Added'
         }
     )
 
