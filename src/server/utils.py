@@ -1,6 +1,7 @@
 import yaml
 from pathlib import Path
 
+
 def get_credentials():
     current_file_dir = Path(__file__).resolve()
     repo_dir = current_file_dir.parent.parent.parent

@@ -16,7 +16,8 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
 app = FastAPI()
 user, db, password, host, port = get_credentials()
-con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+con = psycopg2.connect(database=db, user=user,
+                       password=password, host=host, port=port)
 cur = con.cursor()
 
 
@@ -36,14 +37,17 @@ def test_function():
         }
     )
 
+
 @app.get("/")
 def read_root():
     return 'server is running'
 
+
 @app.get("/connect")
 async def connect2db():
     user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    con = psycopg2.connect(database=db, user=user,
+                           password=password, host=host, port=port)
     con.close()
     logging.info("Database opened successfully")
     return JSONResponse(
@@ -53,11 +57,14 @@ async def connect2db():
         }
     )
 
+
 @app.post("/add")
-async def add2db(distance: int, intensity: int, totaltime:str, date:str):
-    logging.info('Distanec %s, Intensity %s, Time %s, Date %s' %  (distance, intensity, totaltime, date))
+async def add2db(distance: int, intensity: int, totaltime: str, date: str):
+    logging.info('Distanec %s, Intensity %s, Time %s, Date %s' %
+                 (distance, intensity, totaltime, date))
     global cur, con
-    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY, DATE) VALUES ('%s', %s, %s, %s)"%(totaltime, distance, intensity, date));
+    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY, DATE) VALUES ('%s', %s, %s, %s)" % (
+        totaltime, distance, intensity, date))
     con.commit()
     return JSONResponse(
         status_code=200,
@@ -66,9 +73,10 @@ async def add2db(distance: int, intensity: int, totaltime:str, date:str):
             'Distance': distance,
             'Intensity': intensity,
             'Time': totaltime,
-            'Date':date
+            'Date': date
         }
     )
+
 
 @app.post("/createTable")
 async def createTable():
@@ -88,6 +96,7 @@ async def createTable():
         }
     )
 
+
 @app.get("/readAll")
 async def readAll():
     global cur
@@ -98,49 +107,55 @@ async def readAll():
         status_code=200,
         content={
             'info': 'Read database successfully',
-             'entry': output
+            'entry': output
         }
     )
+
 
 @app.get("/read/intensity")
 async def readintensity(level=int):
     global cur
-    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE INTENSITY >= %s" %(level))
+    cur.execute(
+        "SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE INTENSITY >= %s" % (level))
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
         content={
             'info': 'Read database successfully',
-             'entry': output
+            'entry': output
         }
     )
+
 
 @app.get("/read/distance")
 async def readdistance(distance=int):
     global cur
-    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE DISTANCE >= %s" %(distance))
+    cur.execute(
+        "SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE DISTANCE >= %s" % (distance))
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
         content={
             'info': 'Read database successfully',
-             'entry': output
+            'entry': output
         }
     )
 
+
 @app.get("/read/time")
-async def readdistance(time:str="'24:00:00'"):
+async def readdistance(time: str = "'24:00:00'"):
     global cur
-    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE TOTALTIME <= %s"%(time))
+    cur.execute(
+        "SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE TOTALTIME <= %s" % (time))
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
         content={
             'info': 'Read database successfully',
-            'Criteria': 'All entry under %s'% time,
-             'entry': output
+            'Criteria': 'All entry under %s' % time,
+            'entry': output
         }
     )
