@@ -1,0 +1,6 @@
+CREDENTIALS:
+  USER: postgres
+  DB: postgres
+  PASSWORD:
+  HOST: localhost
+  PORT: 5432
