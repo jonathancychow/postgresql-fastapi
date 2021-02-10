@@ -100,8 +100,41 @@ async def readAll():
     return JSONResponse(
         status_code=200,
         content={
-            'info': 'Database opened successfully',
+            'info': 'Read database successfully',
              'entry': output
         }
     )
 
+@app.get("/read/intensity")
+async def readintensity(level=int):
+    user, db, password, host, port = get_credentials()
+    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = con.cursor()
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE INTENSITY >= %s"%(level))
+    output = cur.fetchall()
+    con.close()
+    logging.info("Read from table successfully")
+    return JSONResponse(
+        status_code=200,
+        content={
+            'info': 'Read database successfully',
+             'entry': output
+        }
+    )
+
+@app.get("/read/distance")
+async def readdistance(distance=int):
+    user, db, password, host, port = get_credentials()
+    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = con.cursor()
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE DISTANCE >= %s"%(distance))
+    output = cur.fetchall()
+    con.close()
+    logging.info("Read from table successfully")
+    return JSONResponse(
+        status_code=200,
+        content={
+            'info': 'Read database successfully',
+             'entry': output
+        }
+    )
