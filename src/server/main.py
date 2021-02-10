@@ -50,7 +50,7 @@ async def connect2db():
     )
 
 @app.post("/add")
-async def connect2db(distance: int, intensity: int, totaltime:str):
+async def add2db(distance: int, intensity: int, totaltime:str):
     logging.info('Distanec %s, Intensity %s, Time %s' %  (distance, intensity, totaltime))
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
@@ -68,8 +68,8 @@ async def connect2db(distance: int, intensity: int, totaltime:str):
         }
     )
 
-@app.get("/createTable")
-async def connect2db():
+@app.post("/createTable")
+async def createTable():
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
@@ -88,4 +88,20 @@ async def connect2db():
         }
     )
 
+@app.get("/readAll")
+async def readAll():
+    user, db, password, host, port = get_credentials()
+    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = con.cursor()
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD")
+    output = cur.fetchall()
+    con.close()
+    logging.info("Read from table successfully")
+    return JSONResponse(
+        status_code=200,
+        content={
+            'info': 'Database opened successfully',
+             'entry': output
+        }
+    )
 

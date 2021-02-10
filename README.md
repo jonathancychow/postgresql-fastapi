@@ -7,7 +7,8 @@ Useful SQL syntax and youtube [link](https://www.youtube.com/watch?v=5tEApCGgpEQ
  - UPDATE STUDENT set AGE = 20 where ADMISSION = 3420 
  - DELETE from STUDENT where ADMISSION=3420
 
-
+### Postman Documentation 
+API documentation created using Postman, collection is available [here](https://documenter.getpostman.com/view/12154423/TW77g3o7).
 
 ### Install poetry to Python
 [Poetry](https://python-poetry.org) is a package manager for Python that utilises the latest `pyproject.tml`
