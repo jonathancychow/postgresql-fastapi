@@ -1,14 +1,27 @@
-# python-postgressql-poke-around
-
-Folloing instruction on this [link](https://stackabuse.com/working-with-postgresql-in-python/)
-
-Useful SQL syntax and youtube [link](https://www.youtube.com/watch?v=5tEApCGgpEQ&ab_channel=BecomingaDataScientist) 
- - SELECT * FROM student
- - UPDATE STUDENT set AGE = 20 where ADMISSION = 3420 
- - DELETE from STUDENT where ADMISSION=3420
+# python-postgresql-backend
+This repo is started by following instruction on this [link](https://stackabuse.com/working-with-postgresql-in-python/). This project is intended to wrap the PostgreSQL datebase around using Python framework FastAPI to record my personal running training time. 
 
 ### Postman Documentation 
 API documentation created using Postman, collection is available [here](https://documenter.getpostman.com/view/12154423/TW77g3o7).
+
+### PostgreSQL Table 
+The table contains the following field: 
+- id
+- distance
+- intensity
+- total time
+- date
+
+Should you want to add field in your table, you could modify the end point 'createTable' at main.py
+
+
+## Development
+
+Install development dependencies via:
+
+```shell
+poetry install
+```
 
 ### Install poetry to Python
 [Poetry](https://python-poetry.org) is a package manager for Python that utilises the latest `pyproject.tml`
@@ -36,20 +49,6 @@ poetry install --no-dev
 Start the server with the following:
 
 ```shell
-poetry run uvicorn src.server.main:app
-```
-
-## Development
-
-Install development dependencies via:
-
-```shell
-poetry install
-```
-
-Use the `--reload` flag:
-
-```
 poetry run uvicorn src.server.main:app --reload
 ```
 
