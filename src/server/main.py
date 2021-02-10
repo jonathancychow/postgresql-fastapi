@@ -15,6 +15,10 @@ import logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
 app = FastAPI()
+user, db, password, host, port = get_credentials()
+con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+cur = con.cursor()
+
 
 @app.get(
     "/test",
@@ -52,12 +56,9 @@ async def connect2db():
 @app.post("/add")
 async def add2db(distance: int, intensity: int, totaltime:str, date:str):
     logging.info('Distanec %s, Intensity %s, Time %s, Date %s' %  (distance, intensity, totaltime, date))
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
+    global cur, con
     cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY, DATE) VALUES ('%s', %s, %s, %s)"%(totaltime, distance, intensity, date));
     con.commit()
-    con.close()
     return JSONResponse(
         status_code=200,
         content={
@@ -71,9 +72,7 @@ async def add2db(distance: int, intensity: int, totaltime:str, date:str):
 
 @app.post("/createTable")
 async def createTable():
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
+    global cur, con
     cur.execute('''CREATE TABLE RUNRECORD
           (ID SERIAL PRIMARY KEY,
           TOTALTIME TIME NOT NULL,
@@ -82,7 +81,6 @@ async def createTable():
           DATE DATE NOT NULL);''')
     logging.info("Table created successfully")
     con.commit()
-    con.close()
     return JSONResponse(
         status_code=200,
         content={
@@ -92,12 +90,9 @@ async def createTable():
 
 @app.get("/readAll")
 async def readAll():
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
+    global cur
     cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD")
     output = cur.fetchall()
-    con.close()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
@@ -109,12 +104,9 @@ async def readAll():
 
 @app.get("/read/intensity")
 async def readintensity(level=int):
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
-    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE INTENSITY >= %s"%(level))
+    global cur
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE INTENSITY >= %s" %(level))
     output = cur.fetchall()
-    con.close()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
@@ -126,12 +118,9 @@ async def readintensity(level=int):
 
 @app.get("/read/distance")
 async def readdistance(distance=int):
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
-    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE DISTANCE >= %s"%(distance))
+    global cur
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE DISTANCE >= %s" %(distance))
     output = cur.fetchall()
-    con.close()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
@@ -143,13 +132,9 @@ async def readdistance(distance=int):
 
 @app.get("/read/time")
 async def readdistance(time:str="'24:00:00'"):
-    print(time)
-    user, db, password, host, port = get_credentials()
-    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
-    cur = con.cursor()
+    global cur
     cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE TOTALTIME <= %s"%(time))
     output = cur.fetchall()
-    con.close()
     logging.info("Read from table successfully")
     return JSONResponse(
         status_code=200,
