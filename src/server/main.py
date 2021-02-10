@@ -10,6 +10,9 @@ import psycopg2
 from . import schemas
 # from schemas import *
 from .config import settings
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
 app = FastAPI()
 
@@ -38,7 +41,7 @@ async def connect2db():
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     con.close()
-    print("Database opened successfully")
+    logging.info("Database opened successfully")
     return JSONResponse(
         status_code=200,
         content={
@@ -48,7 +51,7 @@ async def connect2db():
 
 @app.post("/add")
 async def connect2db(distance: int, intensity: int, totaltime:str):
-    print('Distanec %s, Intensity %s, Time %s' %  (distance, intensity, totaltime))
+    logging.info('Distanec %s, Intensity %s, Time %s' %  (distance, intensity, totaltime))
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
@@ -75,6 +78,7 @@ async def connect2db():
           TOTALTIME TIME NOT NULL,
           DISTANCE INT NOT NULL,
           INTENSITY INT NOT NULL);''')
+    logging.info("Table created successfully")
     con.commit()
     con.close()
     return JSONResponse(
