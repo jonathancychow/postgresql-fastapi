@@ -55,7 +55,7 @@ async def connect2db(distance: int, intensity: int, totaltime:str):
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
-    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY) VALUES ('00:24:32', 10, 8)");
+    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY) VALUES ('%s', %s, %s)"%(totaltime, distance, intensity));
     con.commit()
     con.close()
     return JSONResponse(
