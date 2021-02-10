@@ -50,12 +50,12 @@ async def connect2db():
     )
 
 @app.post("/add")
-async def add2db(distance: int, intensity: int, totaltime:str):
-    logging.info('Distanec %s, Intensity %s, Time %s' %  (distance, intensity, totaltime))
+async def add2db(distance: int, intensity: int, totaltime:str, date:str):
+    logging.info('Distanec %s, Intensity %s, Time %s, Date %s' %  (distance, intensity, totaltime, date))
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
-    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY) VALUES ('%s', %s, %s)"%(totaltime, distance, intensity));
+    cur.execute("INSERT INTO RUNRECORD (TOTALTIME, DISTANCE, INTENSITY, DATE) VALUES ('%s', %s, %s, %s)"%(totaltime, distance, intensity, date));
     con.commit()
     con.close()
     return JSONResponse(
@@ -64,7 +64,8 @@ async def add2db(distance: int, intensity: int, totaltime:str):
             'info': 'Record Added',
             'Distance': distance,
             'Intensity': intensity,
-            'Time': totaltime
+            'Time': totaltime,
+            'Date':date
         }
     )
 
@@ -77,7 +78,8 @@ async def createTable():
           (ID SERIAL PRIMARY KEY,
           TOTALTIME TIME NOT NULL,
           DISTANCE INT NOT NULL,
-          INTENSITY INT NOT NULL);''')
+          INTENSITY INT NOT NULL,
+          DATE DATE NOT NULL);''')
     logging.info("Table created successfully")
     con.commit()
     con.close()
