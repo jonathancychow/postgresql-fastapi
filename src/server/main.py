@@ -46,8 +46,9 @@ async def connect2db():
         }
     )
 
-@app.get("/add")
-async def connect2db():
+@app.post("/add")
+async def connect2db(distance: int, intensity: int, totaltime:str):
+    print('Distanec %s, Intensity %s, Time %s' %  (distance, intensity, totaltime))
     user, db, password, host, port = get_credentials()
     con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
     cur = con.cursor()
@@ -57,7 +58,10 @@ async def connect2db():
     return JSONResponse(
         status_code=200,
         content={
-            'info': 'Record Added'
+            'info': 'Record Added',
+            'Distance': distance,
+            'Intensity': intensity,
+            'Time': totaltime
         }
     )
 
