@@ -92,7 +92,8 @@ async def readAll():
 async def readintensity(level=int):
     global cur
     cur.execute("SELECT json_agg(RUNRECORD)::jsonb "
-                "FROM RUNRECORD WHERE INTENSITY >= %s" % (level))
+                "FROM RUNRECORD WHERE INTENSITY >= %s GROUP BY INTENSITY" % (level))
+    # cur.execute("SELECT * FROM RUNRECORD WHERE intensity <= 10 ORDER BY intensity")
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
@@ -108,7 +109,7 @@ async def readintensity(level=int):
 async def readdistance(distance=int):
     global cur
     cur.execute("SELECT json_agg(RUNRECORD)::jsonb "
-                "FROM RUNRECORD WHERE DISTANCE >= %s" % (distance))
+                "FROM RUNRECORD WHERE DISTANCE >= %s GROUP BY DISTANCE" % (distance))
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
@@ -124,7 +125,7 @@ async def readdistance(distance=int):
 async def readtime(time: str = "'24:00:00'"):
     global cur
     cur.execute("SELECT json_agg(RUNRECORD)::jsonb "
-                "FROM RUNRECORD WHERE TOTALTIME <= %s" % (time))
+                "FROM RUNRECORD WHERE TOTALTIME <= %s GROUP BY TOTALTIME" % (time))
     output = cur.fetchall()
     logging.info("Read from table successfully")
     return JSONResponse(
