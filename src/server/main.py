@@ -138,3 +138,22 @@ async def readdistance(distance=int):
              'entry': output
         }
     )
+
+@app.get("/read/time")
+async def readdistance(time:str="'24:00:00'"):
+    print(time)
+    user, db, password, host, port = get_credentials()
+    con = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = con.cursor()
+    cur.execute("SELECT json_agg(RUNRECORD)::jsonb FROM RUNRECORD WHERE TOTALTIME <= %s"%(time))
+    output = cur.fetchall()
+    con.close()
+    logging.info("Read from table successfully")
+    return JSONResponse(
+        status_code=200,
+        content={
+            'info': 'Read database successfully',
+            'Criteria': 'All entry under %s'% time,
+             'entry': output
+        }
+    )
